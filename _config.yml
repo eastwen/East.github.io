@@ -7,7 +7,7 @@ plugins:
   - jekyll-redirect-from
 
 # 基本设置
-baseurl: "/East-wen.github.io"
+baseurl: ""
 url: "https://eastwen.github.io"
 
 # 主题设置
