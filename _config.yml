@@ -1,0 +1,24 @@
+# GitHub Pages Configuration
+title: "East Wen - 设计作品集"
+description: "East Wen的个人设计作品集，展示创意设计与用户体验作品"
+
+# 确保使用index.html作为首页
+plugins:
+  - jekyll-redirect-from
+
+# 基本设置
+baseurl: "/East-wen.github.io"
+url: "https://eastwen.github.io"
+
+# 主题设置
+theme: minima
+
+# 排除文件
+exclude:
+  - README.md
+  - .gitignore
+  - .git/
+
+# 包含文件
+include:
+  - index.html
