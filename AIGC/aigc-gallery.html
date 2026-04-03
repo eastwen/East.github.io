@@ -312,6 +312,7 @@ body.dark-theme .back-btn:hover,
 
     <script src="../js/header-component.js"></script>
     <script src="../js/footer-component.js"></script>
+    <script src="../js/subpage-lazyload.js"></script>
 </head>
 <body>
     <!-- Header将通过组件动态插入 -->
@@ -395,6 +396,9 @@ body.dark-theme .back-btn:hover,
     <script>
         // 页面初始化 - 合并所有DOMContentLoaded事件
         document.addEventListener('DOMContentLoaded', function() {
+            // 初始化子页面懒加载
+            initSubpageLazyLoading();
+
             // 创建Header组件（子页面）
             HeaderComponent.create({ isSubPage: true });
 
@@ -423,18 +427,21 @@ body.dark-theme .back-btn:hover,
             const maxZoom = 3;
             const minZoom = 0.5;
 
-            // 为所有图片添加点击事件
-            const images = document.querySelectorAll('.aigc-item img');
-            images.forEach(img => {
-                img.addEventListener('click', function() {
+            // 图片点击事件委托（支持分批渲染后新增的图片）
+            const galleryGrid = document.getElementById('gallery-grid');
+            if (galleryGrid) {
+                galleryGrid.addEventListener('click', function(e) {
+                    const targetImage = e.target.closest('.aigc-item img');
+                    if (!targetImage) return;
+
                     modal.style.display = 'block';
-                    modalImage.src = this.src;
-                    modalImage.alt = this.alt;
+                    modalImage.src = targetImage.src;
+                    modalImage.alt = targetImage.alt;
                     currentZoom = 1;
                     updateZoom();
                     document.body.style.overflow = 'hidden'; // 防止背景滚动
                 });
-            });
+            }
 
             // 关闭模态框
             function closeModal() {
