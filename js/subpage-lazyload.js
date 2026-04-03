@@ -26,14 +26,20 @@
       }
       img.setAttribute('fetchpriority', 'low');
 
+      if (img.dataset.lazyPrepared === '1') {
+        return;
+      }
+
       const originalSrc = img.getAttribute('src') || '';
       if (originalSrc && !img.dataset.lazySrc) {
         img.dataset.lazySrc = originalSrc;
       }
 
-      if (!img.getAttribute('src') || img.getAttribute('src') === img.dataset.lazySrc) {
+      if (img.dataset.lazySrc && img.getAttribute('src') === img.dataset.lazySrc) {
         img.setAttribute('src', IMAGE_PLACEHOLDER);
       }
+
+      img.dataset.lazyPrepared = '1';
     });
 
     if (!('IntersectionObserver' in window)) {
