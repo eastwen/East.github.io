@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>海外设计作品集 - East wen</title>
-    <link rel="stylesheet" href="../style.css?v=1.9">
+    <link rel="stylesheet" href="../style.css?v=1.7">
 <style>
 /* 确保AIGC页面内容可见 */
 #aigc-gallery {
@@ -301,9 +304,9 @@
         })();
     </script>
 
-    <script src="../js/header-component.js?v=1.9"></script>
+    <script src="../js/header-component.js"></script>
     <script src="../js/footer-component.js"></script>
-    <script src="../js/subpage-lazyload.js?v=1.8"></script>
+    <script src="../js/subpage-lazyload.js"></script>
 </head>
 <body>
     <!-- Header将通过组件动态插入 -->
@@ -318,7 +321,7 @@
                 </a>
             </div>
          <ul class="portfolio-grid aigc-grid" id="gallery-grid">
-            <li class="portfolio-item aigc-item"><img data-src="Frame 2.jpg" alt="Frame 2" loading="lazy"></li>
+            <li class="portfolio-item aigc-item"><img src="Frame 2.jpg" alt="Frame 2" loading="lazy"></li>
         </ul>
         </div>
     </section>
@@ -398,7 +401,7 @@
                     if (!targetImage) return;
 
                     modal.style.display = 'block';
-                    modalImage.src = targetImage.dataset.fullSrc || targetImage.src;
+                    modalImage.src = targetImage.src;
                     modalImage.alt = targetImage.alt;
                     currentZoom = 1;
                     updateZoom();
@@ -555,9 +558,8 @@
             const threshold = 160;
 
             setInterval(function() {
-                if (window.innerWidth > 768 &&
-                    (window.outerHeight - window.innerHeight > threshold ||
-                     window.outerWidth - window.innerWidth > threshold)) {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
                     if (!devtools.open) {
                         devtools.open = true;
                         // 温和提示而不是强制关闭页面

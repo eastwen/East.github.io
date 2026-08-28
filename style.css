@@ -40,7 +40,7 @@
 }
 
 html {
-    min-width: 0;
+    min-width: 390px;
 }
 
 body {
@@ -48,8 +48,8 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--bg-color);
-    overflow-x: hidden;
-    min-width: 0;
+    overflow-x: auto;
+    min-width: 390px;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -73,53 +73,13 @@ nav {
     align-items: center;
     padding: 20px 40px;
     width: 100%;
-    min-width: 0;
-    position: relative;
+    min-width: 390px;
 }
 
 .nav-right {
     display: flex;
     align-items: center;
     gap: 20px;
-}
-
-.menu-toggle {
-    display: none;
-    width: 42px;
-    height: 42px;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    background: var(--card-bg);
-    color: var(--text-color);
-    cursor: pointer;
-}
-
-.nav-backdrop,
-.nav-drawer-header {
-    display: none;
-}
-
-.menu-toggle span {
-    display: block;
-    width: 100%;
-    height: 2px;
-    margin: 4px 0;
-    background: currentColor;
-    border-radius: 2px;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.site-header.is-menu-open .menu-toggle span:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
-}
-
-.site-header.is-menu-open .menu-toggle span:nth-child(2) {
-    opacity: 0;
-}
-
-.site-header.is-menu-open .menu-toggle span:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
 }
 
 .logo {
@@ -135,15 +95,6 @@ nav {
     display: flex;
     list-style: none;
     gap: 40px;
-}
-
-.nav-theme-item {
-    display: flex;
-    align-items: center;
-}
-
-.nav-theme-label {
-    display: none;
 }
 
 .nav-links a {
@@ -798,157 +749,15 @@ img::-moz-selection {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .mobile-menu-open {
-        overflow: hidden;
-    }
-
-    .site-header {
-        background: transparent;
-        border-bottom: 0;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-    }
-
-    body > .portfolio:first-of-type {
-        padding-top: 96px;
-    }
-
     nav {
-        padding: 14px 20px;
-        flex-direction: row;
-        gap: 12px;
-        width: 100%;
-        background: var(--bg-color);
-        border-bottom: 1px solid var(--border-color);
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-    }
-
-    .logo {
-        font-size: 20px;
-    }
-
-    .nav-right {
-        margin-left: auto;
-        gap: 12px;
-    }
-
-    .menu-toggle {
-        display: block;
-    }
-
-    .nav-backdrop {
-        position: fixed;
-        inset: 0;
-        z-index: 1001;
-        display: block;
-        width: 100%;
-        height: 100%;
-        padding: 0;
-        border: 0;
-        visibility: hidden;
-        opacity: 0;
-        pointer-events: none;
-        background: rgba(0, 0, 0, 0.42);
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
-        transition: opacity 0.25s ease, visibility 0.25s ease;
-    }
-
-    .site-header.is-menu-open .nav-backdrop {
-        visibility: visible;
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    .nav-links {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: auto;
-        z-index: 1002;
-        display: flex;
+        padding: 20px;
         flex-direction: column;
-        gap: 0;
-        width: min(84vw, 340px);
-        max-height: none;
-        margin: 0;
-        padding: 18px 22px 28px;
-        overflow-x: hidden;
-        overflow-y: auto;
-        visibility: hidden;
-        pointer-events: none;
-        background: var(--bg-color);
-        border-left: 1px solid var(--border-color);
-        box-shadow: -20px 0 50px rgba(0, 0, 0, 0.18);
-        transform: translateX(100%);
-        transition: transform 0.28s ease, visibility 0.28s ease;
-    }
-
-    .site-header.is-menu-open .nav-links {
-        visibility: visible;
-        pointer-events: auto;
-        transform: translateX(0);
-    }
-
-    .nav-links li {
+        gap: 20px;
         width: 100%;
     }
-
-    .nav-drawer-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        min-height: 52px;
-        margin-bottom: 16px;
-        padding-bottom: 14px;
-        border-bottom: 1px solid var(--border-color);
-        font-size: 18px;
-        font-weight: 600;
-    }
-
-    .nav-drawer-close {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 38px;
-        height: 38px;
-        padding: 0 0 3px;
-        border: 1px solid var(--border-color);
-        border-radius: 50%;
-        background: var(--card-bg);
-        color: var(--text-color);
-        font-size: 28px;
-        line-height: 1;
-        cursor: pointer;
-    }
-
-    .nav-links a {
-        display: flex;
-        align-items: center;
-        min-height: 54px;
-        padding: 0 4px;
-        border-bottom: 1px solid var(--border-color);
-        font-size: 17px;
-        font-weight: 500;
-    }
-
-    .nav-links a::after {
-        display: none;
-    }
-
-    .nav-theme-item {
-        justify-content: space-between;
-        min-height: 68px;
-        padding: 12px 4px 0;
-        margin-top: auto;
-    }
-
-    .nav-theme-label {
-        display: inline;
-        font-size: 15px;
-        color: var(--text-secondary);
+    
+    .nav-links {
+        gap: 20px;
     }
     
     .hero {

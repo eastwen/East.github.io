@@ -5,64 +5,6 @@
 
   const INITIAL_RENDER_COUNT = 24;
   const RENDER_BATCH_SIZE = 18;
-  const MOBILE_INITIAL_RENDER_COUNT = 12;
-  const MOBILE_RENDER_BATCH_SIZE = 10;
-
-  function isNearViewport(element) {
-    const rect = element.getBoundingClientRect();
-    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
-    return rect.top < viewportHeight * 1.25 && rect.bottom > -100;
-  }
-
-  function getImageRootMargin() {
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (connection && (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g')) {
-      return '250px 0px';
-    }
-    return '700px 0px';
-  }
-
-  function getPreviewSource(source) {
-    if (!source || /^(?:data:|https?:)/i.test(source)) {
-      return source;
-    }
-
-    const match = source.match(/^([^?#]+)([?#].*)?$/);
-    const pathname = match ? match[1] : source;
-    if (!/\.(?:avif|gif|jpe?g|png|webp)$/i.test(pathname)) {
-      return source;
-    }
-
-    const lastSlashIndex = pathname.lastIndexOf('/');
-    const directory = lastSlashIndex === -1 ? '' : pathname.slice(0, lastSlashIndex + 1);
-    const filename = pathname.slice(lastSlashIndex + 1);
-    return `${directory}thumbs/${filename}.webp`;
-  }
-
-  function loadImage(img) {
-    const source = img.dataset.lazySrc;
-    const fullSource = img.dataset.fullSrc || source;
-    if (!source || img.dataset.lazyLoaded === '1') {
-      return;
-    }
-
-    img.dataset.lazyLoaded = '1';
-    if (source !== fullSource) {
-      img.addEventListener(
-        'error',
-        () => {
-          if (img.dataset.lazyFallback === '1') {
-            return;
-          }
-          img.dataset.lazyFallback = '1';
-          img.setAttribute('src', fullSource);
-        },
-        { once: true }
-      );
-    }
-
-    img.setAttribute('src', source);
-  }
 
   function optimizeOffscreenRendering() {
     const items = document.querySelectorAll('.aigc-grid .aigc-item');
@@ -76,25 +18,24 @@
     const images = document.querySelectorAll('.aigc-grid .aigc-item img');
 
     images.forEach((img) => {
-      const priorityImage = isNearViewport(img);
-      img.setAttribute('loading', priorityImage ? 'eager' : 'lazy');
-      img.setAttribute('decoding', 'async');
-      img.setAttribute('fetchpriority', priorityImage ? 'high' : 'low');
+      if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+      }
+      if (!img.hasAttribute('decoding')) {
+        img.setAttribute('decoding', 'async');
+      }
+      img.setAttribute('fetchpriority', 'low');
 
       if (img.dataset.lazyPrepared === '1') {
         return;
       }
 
-      const originalSrc = img.dataset.fullSrc || img.dataset.src || img.getAttribute('src') || '';
-      if (originalSrc && !img.dataset.fullSrc) {
-        img.dataset.fullSrc = originalSrc;
+      const originalSrc = img.getAttribute('src') || '';
+      if (originalSrc && !img.dataset.lazySrc) {
+        img.dataset.lazySrc = originalSrc;
       }
 
-      if (img.dataset.fullSrc && !img.dataset.lazySrc) {
-        img.dataset.lazySrc = getPreviewSource(img.dataset.fullSrc);
-      }
-
-      if (img.dataset.lazySrc && img.getAttribute('src') !== IMAGE_PLACEHOLDER) {
+      if (img.dataset.lazySrc && img.getAttribute('src') === img.dataset.lazySrc) {
         img.setAttribute('src', IMAGE_PLACEHOLDER);
       }
 
@@ -104,7 +45,7 @@
     if (!('IntersectionObserver' in window)) {
       images.forEach((img) => {
         if (img.dataset.lazySrc) {
-          loadImage(img);
+          img.setAttribute('src', img.dataset.lazySrc);
         }
       });
       return;
@@ -115,23 +56,20 @@
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const img = entry.target;
-          loadImage(img);
+          if (img.dataset.lazySrc) {
+            img.setAttribute('src', img.dataset.lazySrc);
+          }
           observer.unobserve(img);
         });
       },
       {
-        rootMargin: getImageRootMargin(),
+        rootMargin: '400px 0px',
         threshold: 0.01,
       }
     );
 
     images.forEach((img) => {
       if (img.dataset.lazyObserved === '1') return;
-      if (isNearViewport(img)) {
-        loadImage(img);
-        img.dataset.lazyObserved = '1';
-        return;
-      }
       imageObserver.observe(img);
       img.dataset.lazyObserved = '1';
     });
@@ -195,12 +133,9 @@
     const items = Array.from(grid.children).filter((item) =>
       item.classList && item.classList.contains('aigc-item')
     );
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    const initialRenderCount = isMobile ? MOBILE_INITIAL_RENDER_COUNT : INITIAL_RENDER_COUNT;
-    const renderBatchSize = isMobile ? MOBILE_RENDER_BATCH_SIZE : RENDER_BATCH_SIZE;
-    if (items.length <= initialRenderCount) return;
+    if (items.length <= INITIAL_RENDER_COUNT) return;
 
-    const pendingItems = items.slice(initialRenderCount);
+    const pendingItems = items.slice(INITIAL_RENDER_COUNT);
     pendingItems.forEach((item) => item.remove());
 
     if (!('IntersectionObserver' in window)) {
@@ -217,7 +152,7 @@
     grid.appendChild(sentinel);
 
     const appendBatch = () => {
-      const batch = pendingItems.splice(0, renderBatchSize);
+      const batch = pendingItems.splice(0, RENDER_BATCH_SIZE);
       if (batch.length === 0) {
         sentinel.remove();
         return;
